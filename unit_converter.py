@@ -39,14 +39,17 @@ class UnitConverter:
             }
         }
 
-        self.negative_allowed = {"c", "f", "k"}
+        self.negative_allowed = {"c"}
 
     # ---------- MASTER CONVERT ----------
 
     def convert(self, value, from_unit, to_unit):
-
         from_unit = from_unit.lower()
         to_unit = to_unit.lower()
+
+        # Vérification des valeurs négatives
+        if value < 0 and from_unit not in self.negative_allowed:
+            raise ValueError(f"Negative value not allowed for unit: {from_unit}")
 
         # Temperature handled separately
         if from_unit in ["c", "f", "k"] and to_unit in ["c", "f", "k"]:
@@ -62,7 +65,6 @@ class UnitConverter:
 
         raise ValueError(f"Unsupported conversion: {from_unit} → {to_unit}")
 
-    # ---------- GENERIC UNIT CONVERSION ----------
 
     def convert_generic(self, value, from_unit, to_unit, system):
 
