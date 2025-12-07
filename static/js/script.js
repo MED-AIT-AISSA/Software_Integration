@@ -94,6 +94,11 @@ function showHelp() {
             for (const type in data.allowed_units)
                 html += `<p><strong>${type}:</strong> ${data.allowed_units[type].join(", ")}</p>`;
 
+            if (data.note) {
+                html += `<h4>Note:</h4>`;
+                html += `<p>${data.note}</p>`;
+            }
+
             document.getElementById("helpContent").innerHTML = html;
             document.getElementById("helpModal").style.display = "block";
         });

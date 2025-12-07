@@ -10,7 +10,6 @@ def index():
     return render_template("index.html")
 
 
-# Help
 @app.route("/help", methods=["GET"])
 def help():
     return jsonify({
@@ -20,12 +19,14 @@ def help():
             "method": "POST"
         },
         "allowed_units": {
-            "length": ["mi", "km", "m", "cm"],
-            "temperature": ["c", "f"],
-            "weight": ["kg", "lb"],
-            "volume": ["l", "ml", "gal"]
-        }
+            "length": ["mm", "cm", "m", "km", "mi"],
+            "temperature": ["c", "f", "k"],
+            "weight": ["g", "kg", "tonne", "lb"],
+            "volume": ["ml", "l", "gal"]
+        },
+        "note": "Only Celsius ('c') can be negative. All other units must be non-negative."
     })
+
 
 
 # Convert
