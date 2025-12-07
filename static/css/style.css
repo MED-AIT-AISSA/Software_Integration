@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #eef2f7;
+    padding: 40px;
+}
+
+.container {
+    width: 450px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+}
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #005fc3;
+}
+
+.result {
+    padding: 15px;
+    background: #e8fbe8;
+    border: 1px solid #a8e6a3;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-size: 17px;
+}
+
+.error {
+    padding: 15px;
+    background: #fdeaea;
+    border: 1px solid #f5bcbc;
+    margin-top: 20px;
+    border-radius: 6px;
+    color: #b30000;
+    font-size: 17px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff8dc;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #f0e68c;
+    width: 500px;
+    border-radius: 10px;
+}
+
+.close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+pre {
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 6px;
+}
