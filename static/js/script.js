@@ -1,30 +1,37 @@
 const allowedUnits = {
-    "mi": "Miles",
-    "km": "Kilometers",
-    "m": "Meters",
+    "mm": "Millimeters",
     "cm": "Centimeters",
+    "m": "Meters",
+    "km": "Kilometers",
+    "mi": "Miles",
     "c": "Celsius",
     "f": "Fahrenheit",
+    "k": "Kelvin",
+    "g": "Grams",
     "kg": "Kilograms",
+    "tonne": "Tonnes",
     "lb": "Pounds",
-    "l": "Liters",
     "ml": "Milliliters",
+    "l": "Liters",
     "gal": "Gallons"
 };
 
-const validConversions = {
-    "mi": ["km"],
-    "km": ["mi"],
-    "m": ["cm"],
-    "cm": ["m"],
-    "c": ["f"],
-    "f": ["c"],
-    "kg": ["lb"],
-    "lb": ["kg"],
-    "l": ["ml", "gal"],
-    "ml": ["l"],
-    "gal": ["l"]
+// Map each unit to all units in the same category except itself
+const conversionCategories = {
+    "length": ["mm", "cm", "m", "km", "mi"],
+    "temperature": ["c", "f", "k"],
+    "weight": ["g", "kg", "tonne", "lb"],
+    "volume": ["ml", "l", "gal"]
 };
+
+// Build validConversions dynamically
+const validConversions = {};
+for (const cat in conversionCategories) {
+    const units = conversionCategories[cat];
+    units.forEach(u => {
+        validConversions[u] = units.filter(x => x !== u);
+    });
+}
 
 window.onload = function () {
     const fromElem = document.getElementById("from_unit");
@@ -45,16 +52,18 @@ function updateToUnits() {
 
     toElem.innerHTML = ""; // clear
 
-    validConversions[from_unit].forEach(u => {
-        const op = document.createElement("option");
-        op.value = u;
-        op.textContent = `${allowedUnits[u]} (${u})`;
-        toElem.appendChild(op);
-    });
+    if (validConversions[from_unit]) {
+        validConversions[from_unit].forEach(u => {
+            const op = document.createElement("option");
+            op.value = u;
+            op.textContent = `${allowedUnits[u]} (${u})`;
+            toElem.appendChild(op);
+        });
+    }
 }
 
 function convert() {
-    const value = document.getElementById("value").value;
+    const value = parseFloat(document.getElementById("value").value);
     const from_unit = document.getElementById("from_unit").value;
     const to_unit = document.getElementById("to_unit").value;
 
