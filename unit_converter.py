@@ -1,60 +1,99 @@
 class UnitConverter:
 
     def __init__(self):
-        self.conversions = {
-            # Length
-            ("mi", "km"): self.miles_to_km,
-            ("km", "mi"): self.km_to_miles,
-            ("m", "cm"): self.m_to_cm,
-            ("cm", "m"): self.cm_to_m,
 
-            # Temperature
-            ("c", "f"): self.c_to_f,
-            ("f", "c"): self.f_to_c,
+        # Reference systems for simpler conversions
+        self.ref_units = {
+            "length": {
+                "base": "m",
+                "units": {
+                    "mm": 0.001,
+                    "cm": 0.01,
+                    "m": 1,
+                    "km": 1000,
+                    "mi": 1609.34
+                }
+            },
 
-            # Weight
-            ("kg", "lb"): self.kg_to_lb,
-            ("lb", "kg"): self.lb_to_kg,
+            "weight": {
+                "base": "kg",
+                "units": {
+                    "g": 0.001,
+                    "kg": 1,
+                    "tonne": 1000,
+                    "lb": 0.453592
+                }
+            },
 
-            # Volume
-            ("l", "ml"): self.l_to_ml,
-            ("ml", "l"): self.ml_to_l,
-            ("l", "gal"): self.l_to_gal,
-            ("gal", "l"): self.gal_to_l,
+            "volume": {
+                "base": "l",
+                "units": {
+                    "ml": 0.001,
+                    "l": 1,
+                    "gal": 3.78541
+                }
+            },
+
+            "temperature": {
+                "units": ["c", "f", "k"]
+            }
         }
 
-        self.negative_allowed = {"c", "f"}
+        self.negative_allowed = {"c", "f", "k"}
+
+    # ---------- MASTER CONVERT ----------
 
     def convert(self, value, from_unit, to_unit):
+
         from_unit = from_unit.lower()
         to_unit = to_unit.lower()
 
-        key = (from_unit, to_unit)
+        # Temperature handled separately
+        if from_unit in ["c", "f", "k"] and to_unit in ["c", "f", "k"]:
+            return self.convert_temperature(value, from_unit, to_unit)
 
-        if key not in self.conversions:
-            raise ValueError(f"Unsupported conversion: {from_unit} → {to_unit}")
+        # Generic conversions
+        for category, system in self.ref_units.items():
+            if category == "temperature":
+                continue
 
-        if value < 0 and from_unit not in self.negative_allowed:
-            raise ValueError(f"Negative value not allowed for unit: {from_unit}")
+            if from_unit in system["units"] and to_unit in system["units"]:
+                return self.convert_generic(value, from_unit, to_unit, system)
 
-        return self.conversions[key](value)
+        raise ValueError(f"Unsupported conversion: {from_unit} → {to_unit}")
 
-    # Length
-    def miles_to_km(self, v): return v * 1.60934
-    def km_to_miles(self, v): return v / 1.60934
-    def m_to_cm(self, v): return v * 100
-    def cm_to_m(self, v): return v / 100
+    # ---------- GENERIC UNIT CONVERSION ----------
 
-    # Temperature
-    def c_to_f(self, v): return (v * 9/5) + 32
-    def f_to_c(self, v): return (v - 32) * 5/9
+    def convert_generic(self, value, from_unit, to_unit, system):
 
-    # Weight
-    def kg_to_lb(self, v): return v * 2.20462
-    def lb_to_kg(self, v): return v / 2.20462
+        # Convert to base unit
+        base_value = value * system["units"][from_unit]
 
-    # Volume
-    def l_to_ml(self, v): return v * 1000
-    def ml_to_l(self, v): return v / 1000
-    def l_to_gal(self, v): return v * 0.264172
-    def gal_to_l(self, v): return v / 0.264172
+        # Convert from base to target
+        return base_value / system["units"][to_unit]
+
+    # ---------- TEMPERATURE CONVERSION ----------
+
+    def convert_temperature(self, value, from_u, to_u):
+        if from_u == to_u:
+            return value
+
+        # Convert to Kelvin
+        if from_u == "c":
+            k = value + 273.15
+        elif from_u == "f":
+            k = (value - 32) * 5/9 + 273.15
+        elif from_u == "k":
+            k = value
+        else:
+            raise ValueError("Unsupported temperature unit")
+
+        # Convert Kelvin to target unit
+        if to_u == "c":
+            return k - 273.15
+        elif to_u == "f":
+            return (k - 273.15) * 9/5 + 32
+        elif to_u == "k":
+            return k
+        else:
+            raise ValueError("Unsupported temperature unit")
